@@ -1,10 +1,5 @@
-for this python script to work you need the following:
 streamlit
 pandas
 seaborn
 matplotlib
 
-to install type in terminal:
-pip install streamlit pandas seaborn matplotlib
-
-type 'streamlit run main.py' in terminal to run.

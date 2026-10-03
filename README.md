@@ -44,7 +44,8 @@ The CSV file should be stored in the same directory as the Python application.
 Project Structure
 
 CO2-Emissions-Visualizer/
-│
+
+
 ├── app.py
 
 ├── annual-co2-emissions-per-country.csv

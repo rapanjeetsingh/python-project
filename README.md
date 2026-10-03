@@ -46,8 +46,11 @@ Project Structure
 CO2-Emissions-Visualizer/
 │
 ├── app.py
+
 ├── annual-co2-emissions-per-country.csv
+
 ├── requirements.txt
+
 └── README.md
 
 Getting Started

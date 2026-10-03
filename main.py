@@ -3,8 +3,12 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+@st.cache_data
+def load_data():
+    return pd.read_csv("annual-co2-emissions-per-country.csv")
 
-CO2 = pd.read_csv("annual-co2-emissions-per-country.csv")
+
+CO2 = load_data()
 
 
 def program_heading():

@@ -1,5 +1,7 @@
 🌍 CO2 Emissions Visualizer
 
+the link to the streamlit app: https://python-project-hgis6p8rc4asdakrcyeise.streamlit.app/
+
 A Python Streamlit application that allows users to visualize CO2 emissions for a country over time and compare the emissions of two countries.
 Features
 

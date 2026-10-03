@@ -4,9 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-CO2 = pd.read_csv(
-    r"C:\\Users\\rapan\\Downloads\\annual-co2-emissions-per-country.csv"
-)
+CO2 = pd.read_csv("annual-co2-emissions-per-country.csv")
 
 
 def program_heading():

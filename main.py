@@ -18,19 +18,23 @@ def program_heading():
         'or compare between 2 countries'
     )
 
-    st.write(
-        '*******************************************************************'
-    )
+    st.divider()
 
+def country_input_taker(data, key):
 
-def country_input_taker(key):
+    country_list = data['entity'].dropna().unique().tolist()
 
-    country = st.text_input(
-        'what countries would you like to see the graph for? :',
+    country_list.sort()
+
+    country = st.selectbox(
+        'Select a country',
+        options=country_list,
+        index=None,
+        placeholder="Choose a country...",
         key=key
-    )
+        )
 
-    return country.strip()
+    return country
 
 
 def year_input_taker(key):
@@ -238,6 +242,7 @@ def main():
     program_heading()
 
     entity_1 = country_input_taker(
+        CO2,
         key='country_1'
     )
 
@@ -278,6 +283,7 @@ def main():
         )
 
         entity_2 = country_input_taker(
+            CO2,
             key='country_2'
         )
 
@@ -342,6 +348,3 @@ def main():
 if __name__ == "__main__":
 
     main()
-
-
-

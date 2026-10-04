@@ -126,26 +126,3 @@ Technologies
 This project is written in Python and uses Streamlit for the user interface and data visualization libraries for the graphs.
 
 The required Python packages are listed separately in requirements.txt.
-Future Improvements
-
-Some possible improvements include:
-
-    Add a dropdown menu for selecting countries.
-
-    Add interactive charts.
-
-    Display exact emission values when hovering over data points.
-
-    Allow users to upload their own datasets.
-
-    Add additional CO2-related statistics.
-
-    Improve the user interface.
-
-    Deploy the application online.
-
-    Add more comparison options.
-
-Author
-
-Created as a Python data visualization project.

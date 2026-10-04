@@ -34,7 +34,7 @@ def country_input_taker(key):
 
 
 def year_input_taker(key):
-
+#the function takes input as %d so it will always default to the value 0 if a integer is not put so the validaiton is of no use.
     try:
         year = st.number_input(
             label='what year would you like to see the graph for? :',

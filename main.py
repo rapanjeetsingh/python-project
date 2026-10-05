@@ -25,6 +25,8 @@ def country_input_taker(data, key):
     country_list = data['entity'].dropna().unique().tolist()
 
     country_list.sort()
+    #don't really need it but i still put it in
+    global country
 
     country = st.selectbox(
         'Select a country',
@@ -37,22 +39,16 @@ def country_input_taker(data, key):
     return country
 
 
-def year_input_taker(key):
-#the function takes input as %d so it will always default to the value 0 if a integer is not put so the validation is of no use.
-    try:
-        year = st.number_input(
-            label='what year would you like to see the graph for? :',
-            value=2020,
-            step=1,
-            format='%d',
-            key=key
+def year_input_taker(data, country, key):
+
+     year = st.slider('what year would you like to see the data for:',
+                         min_value=data.loc[data['entity'] == country, "year"].min(),
+                         max_value=data.loc[data['entity'] == country, "year"].max(),
+                         value=2020,
+                         key=key
         )
 
-    except ValueError:
-        st.error('Please enter a number')
-        return None
-
-    return int(year)
+     return year
 
 
 def data_validator(country, year, data):
@@ -251,6 +247,8 @@ def main():
     )
 
     year_1 = year_input_taker(
+        CO2,
+        country,
         key='year_1'
     )
 
@@ -292,6 +290,8 @@ def main():
         )
 
         year_2 = year_input_taker(
+            CO2,
+            country,
             key='year_2'
         )
 

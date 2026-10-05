@@ -242,9 +242,7 @@ def main():
         key='country_1'
     )
 
-    st.write(
-        '*******************************************************************'
-    )
+    st.divider()
 
     year_1 = year_input_taker(
         CO2,
@@ -268,26 +266,20 @@ def main():
     if not valid:
         return
 
-    st.write(
-        '*******************************************************************'
-    )
+    st.divider()
 
     comparison = choice_of_comparison()
 
     if comparison == True:
 
-        st.write(
-            '*******************************************************************'
-        )
+        st.divider()
 
         entity_2 = country_input_taker(
             CO2,
             key='country_2'
         )
 
-        st.write(
-            '*******************************************************************'
-        )
+        st.divider()
 
         year_2 = year_input_taker(
             CO2,
@@ -319,9 +311,7 @@ def main():
             year_2
         )
 
-        st.write(
-            '*******************************************************************'
-        )
+        st.divider()
 
         result = [
             entity_1,
@@ -340,9 +330,7 @@ def main():
             CO2
         )
 
-        st.write(
-            '*******************************************************************'
-        )
+        st.divider()
 
 
 if __name__ == "__main__":

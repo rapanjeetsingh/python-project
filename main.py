@@ -25,14 +25,19 @@ def country_input_taker(data, key):
     country_list = data['entity'].dropna().unique().tolist()
 
     country_list.sort()
+
     #don't really need it but i still put it in
     global country
+
+    default_country = 'Canada'
+
+    default_country_index = default_country_index = country_list.index(default_country)
 
     country = st.selectbox(
         'Select a country',
         options=country_list,
-        index=None,
         placeholder="Choose a country...",
+        index=default_country_index,
         key=key
         )
 
@@ -42,9 +47,10 @@ def country_input_taker(data, key):
 def year_input_taker(data, country, key):
 
      year = st.slider('what year would you like to see the data for:',
-                         min_value=data.loc[data['entity'] == country, "year"].min(),
-                         max_value=data.loc[data['entity'] == country, "year"].max(),
+                         min_value=int(data.loc[data['entity'] == country, "year"].min()),
+                         max_value=(data.loc[data['entity'] == country, "year"].max()),
                          value=2020,
+                         step=1,
                          key=key
         )
 

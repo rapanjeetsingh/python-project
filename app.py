@@ -433,7 +433,3 @@ def main():
 if __name__ == "__main__":
 <<<<<<< HEAD:main.py
     main()
-=======
-
-    main() 
->>>>>>> origin/main:app.py

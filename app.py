@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+import numpy as np
 
 #caches the data by formatting it in a dictionary, so it won't have to load it every time
 @st.cache_data
@@ -151,14 +153,24 @@ def get_data_to_plot(data, country, year, value_column):
         ["year", value_column]
     ].copy()
 
-    #converts teh plot data value to integers
+    # Convert values to numeric
     plot_data[value_column] = pd.to_numeric(
-        plot_data[value_column], errors="coerce"
+        plot_data[value_column],
+        errors="coerce"
     )
-    #gives the soreted year values
-    return plot_data.dropna(
+
+    # Remove missing values
+    plot_data = plot_data.dropna(
         subset=["year", value_column]
-    ).sort_values("year")
+    )
+
+    # Remove infinite values such as inf and -inf
+    plot_data = plot_data[
+        np.isfinite(plot_data[value_column])
+    ]
+
+    # Sort by year
+    return plot_data.sort_values("year")
 
 
 def what_graphs_to_graph():
@@ -183,6 +195,7 @@ def what_graphs_to_graph():
         st.warning("Please select at least one graph.")
 
     return selected_graphs
+
 
 
 def plot_one_country_data(country, year, data, graph):
@@ -228,6 +241,14 @@ def plot_one_country_data(country, year, data, graph):
     ).all():
         ax.set_yscale("log")
 
+        # Use readable labels on normal (linear) axes
+    if ax.get_yscale() == "linear":
+        ax.yaxis.set_major_formatter(
+            mticker.FuncFormatter(
+                lambda x, _: f"{x:,.0f}"
+            )
+        )
+
     #sets a title
     ax.set_title(
         f"{graph} — {country}",
@@ -244,12 +265,112 @@ def plot_one_country_data(country, year, data, graph):
     st.pyplot(fig)
     plt.close(fig)
 
+def show_percentage_difference(
+    data, country_1, country_2, value_column,
+    year_1, year_2
+):
+    # Get the data for each country
+    data_1 = get_data_to_plot(
+        data, country_1, year_1, value_column
+    )
+    data_2 = get_data_to_plot(
+        data, country_2, year_2, value_column
+    )
+
+    # only uses the years that each country has in common so that there are no complications
+    comparison_data = pd.merge(
+        data_1,
+        data_2,
+        on="year",
+        suffixes=("_1", "_2")
+    )
+
+    #checks if the list is empty
+    if comparison_data.empty:
+        st.warning(
+            "There are no overlapping years to compare."
+        )
+        return
+
+    # Use the latest year for both countries
+    latest = comparison_data.sort_values(
+        "year"
+    ).iloc[-1]
+
+
+    value_1 = latest[f"{value_column}_1"]
+    value_2 = latest[f"{value_column}_2"]
+    common_year = int(latest["year"])
+
+    #if the value is zero it gives error, cant divide by zero
+    if value_1 == 0:
+        st.warning(
+            "Percentage difference cannot be calculated "
+            "because the first country's value is zero."
+        )
+        return
+
+    #calculates the percentage
+    percentage = (
+        (value_2 - value_1) / abs(value_1)
+    ) * 100
+
+    #code for the table
+    st.markdown(
+        f"### Percentage comparison ({common_year})"
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric(
+        country_1,
+        f"{value_1:,.2f}"
+    )
+
+    col2.metric(
+        country_2,
+        f"{value_2:,.2f}"
+    )
+
+    col3.metric(
+        "Difference vs. " + country_1,
+        f"{percentage:+,.2f}%",
+        delta=f"{percentage:+,.2f}%"
+    )
+
+    # Show the percentage change for each shared year
+    comparison_data["Percentage difference (%)"] = (
+        (
+            comparison_data[f"{value_column}_2"]
+            - comparison_data[f"{value_column}_1"]
+        )
+        / comparison_data[f"{value_column}_1"].abs()
+    ) * 100
+
+    st.dataframe(
+        comparison_data[
+            ["year", "Percentage difference (%)"]
+        ].rename(columns={"year": "Year"}),
+        hide_index=True,
+        use_container_width=True
+    )
 
 #the function assigns variables to the countries it is plotting and data to plot and plots them
 def plot_comparison(
     data, country_1, year_1, country_2, year_2, graph
 ):
     value_column = VALUE_COLUMNS[graph]
+
+    #makes the table which shows the percentage difference
+    show_percentage_difference(
+        data,
+        country_1,
+        country_2,
+        value_column,
+        year_1,
+        year_2
+    )
+
 
     country_1_plot = get_data_to_plot(
         data, country_1, year_1, value_column
@@ -320,6 +441,14 @@ def plot_comparison(
         plot_data[value_column] > 0
     ).all():
         ax.set_yscale("log")
+
+    # Use readable labels on normal (linear) axes
+    if ax.get_yscale() == "linear":
+        ax.yaxis.set_major_formatter(
+            mticker.FuncFormatter(
+                lambda x, _: f"{x:,.0f}"
+            )
+        )
 
     ax.set_title(
         f"{graph}: {country_1} vs {country_2}",

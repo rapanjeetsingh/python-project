@@ -1,34 +1,36 @@
-Installation and Setup
-Requirements
-Python 3
-pip
-Git (optional)
-1. Clone the Repository
+##Installation and Setup
+
+##Requirements
+-Python 3
+-pip
+-Git (optional)
+
+##1. Clone the Repository
 
 Open a terminal and run:
 
-bash
+'''bash
 git clone https://github.com/rapanjeetsingh/python-project.git
-cd python-project
+cd python-project'''
 
 
 Alternatively, download the repository as a ZIP file from GitHub and extract it.
 
-2. Install Dependencies
+##2. Install Dependencies
 
 Install the required Python libraries:
 
-bash
-pip install -r requirements.txt
+'''bash
+pip install -r requirements.txt'''
 
-3. Run the Application
+##3. Run the Application
 
 Start the Streamlit application:
 
-bash
-streamlit run app.py
+'''bash
+streamlit run app.py'''
 
-4. Open the Application
+##4. Open the Application
 
 Streamlit will display a local URL in the terminal, usually http://localhost:8501. Open this URL in your web browser to use the application.
 

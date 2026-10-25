@@ -3,8 +3,10 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+#caches the data by formatting it in a dictionary, so it won't have to load it every time
 @st.cache_data
 def load_data():
+    #gives a readable name to each of the file
     files = {
         "CO2 emission": "annual-co2-emissions-per-country.csv",
         "CO2 per Capita": "co-emissions-per-capita.csv",
@@ -13,12 +15,15 @@ def load_data():
         "population": "population-with-un-projections.csv"
     }
 
+    #creates a empty dictionary which contains the name of the data to pull from when plotting
     datasets = {}
 
+    #loops over the dictionary and loads the data
     for name, filename in files.items():
         data = pd.read_csv(filename)
         data.columns = data.columns.str.strip()
 
+        #renames the columns to make it easier to write code for and to make it consistent
         data = data.rename(columns={
             "country": "entity",
             "Country": "entity",
@@ -28,20 +33,26 @@ def load_data():
             "Year": "year"
         })
 
+        #converts the string value in year to integers
         data["year"] = pd.to_numeric(
             data["year"], errors="coerce"
         )
 
+        #removes teh rows where entity(entity was used as name of country because this is what the csv file used) or year is missing
         data = data.dropna(subset=["entity", "year"])
+
+        #converts the year into integers because it was displaying years as float point numbers
         data["year"] = data["year"].astype(int)
 
+        #this puts the cleaned dataframe in the directory under its name, ex: puts the data for CO2 emission in its csv file name as the key
         datasets[name] = data
 
     return datasets
 
-
+#data_list contains all 5 variables
 data_list = load_data()
 
+#this connects the name of the columns with the name displayed to the user
 VALUE_COLUMNS = {
     "CO2 emission": "emissions_total",
     "CO2 per Capita": "CO2 emissions per capita",
@@ -50,7 +61,7 @@ VALUE_COLUMNS = {
     "population": "Population"
 }
 
-
+#makes the program heading
 def program_heading():
     st.title(
         "This is an app to see CO2 emission of a country "
@@ -58,16 +69,19 @@ def program_heading():
     )
     st.divider()
 
-
+#function to take the input of the countries
 def country_input_taker(data, key):
+    #sorts the name of the entities in the data and takes only the unique names
     country_list = sorted(
         data["entity"].dropna().unique().tolist()
     )
 
+    #returns none if the list is empty
     if not country_list:
         st.error("No countries are available in this dataset.")
         return None
 
+    #sets teh default country, if it is not in the list of countries sets the alphabatically first country as teh first country
     default_country = "Canada"
     default_country_index = (
         country_list.index(default_country)
@@ -75,6 +89,7 @@ def country_input_taker(data, key):
         else 0
     )
 
+    #shows the dropdown box
     return st.selectbox(
         "Select a country",
         options=country_list,
@@ -82,24 +97,30 @@ def country_input_taker(data, key):
         key=key
     )
 
-
+#takes the input for the year
 def year_input_taker(data, country, key):
     country_years = data.loc[
         data["entity"] == country, "year"
     ].dropna()
 
+    #checks if the country_years is empty
     if country_years.empty:
         st.warning(
             f"No year data is available for {country}."
         )
         return None
 
+    #gives the min and max year to set limit of the slider
     min_year = int(country_years.min())
     max_year = int(country_years.max())
 
+    #sets the default year
     default_year = min(2020, max_year)
+
+    #makes the default year to be as close to 2020 as possible if it is not availabe
     default_year = max(min_year, default_year)
 
+    #shows the slider to set the year
     return st.slider(
         "What year would you like to see the data from?",
         min_value=min_year,
@@ -110,42 +131,31 @@ def year_input_taker(data, country, key):
     )
 
 
-def data_validator(country, year, data):
-    matching_data = data[
-        (data["entity"] == country)
-        & (data["year"] == year)
-    ]
-
-    if matching_data.empty:
-        st.warning(
-            f"No data is available for {country} in {year} "
-            "in this dataset."
-        )
-        return False
-
-    return True
-
-
+#gets the data to plot
 def get_data_to_plot(data, country, year, value_column):
+    #gives error if the column value_column does not match the column in the dataset
     if value_column not in data.columns:
         st.error(
             f"Column '{value_column}' was not found. "
             f"Available columns: {data.columns.tolist()}"
         )
+        #returns the empty table with a year and another column whose name comes from value_column, makes so that program knows what to do even if there is no data in it
         return pd.DataFrame(
             columns=["year", value_column]
         )
 
+    #gets the data to plot and stores it in plot_data
     plot_data = data.loc[
         (data["entity"] == country)
         & (data["year"] >= year),
         ["year", value_column]
     ].copy()
 
+    #converts teh plot data value to integers
     plot_data[value_column] = pd.to_numeric(
         plot_data[value_column], errors="coerce"
     )
-
+    #gives the soreted year values
     return plot_data.dropna(
         subset=["year", value_column]
     ).sort_values("year")
@@ -156,6 +166,7 @@ def what_graphs_to_graph():
 
     selected_graphs = []
 
+    #lets you choose the graph using a dropbox from the dictionary Value_columns which contains the name of the different graphs
     for graph in VALUE_COLUMNS:
         selected = st.checkbox(
             graph,
@@ -163,9 +174,11 @@ def what_graphs_to_graph():
             key=f"graph_{graph}"
         )
 
+        #if the graph is selected it will add it to a list called selected_graphs
         if selected:
             selected_graphs.append(graph)
 
+    #gives warning if nothing is selected
     if not selected_graphs:
         st.warning("Please select at least one graph.")
 
@@ -173,11 +186,14 @@ def what_graphs_to_graph():
 
 
 def plot_one_country_data(country, year, data, graph):
+    #assigns the name of the selected graphs to the variable named value_column
     value_column = VALUE_COLUMNS[graph]
 
+    #stores the data in a variable
     plot_data = get_data_to_plot(
         data, country, year, value_column
     )
+
 
     if plot_data.empty:
         st.warning(
@@ -186,6 +202,7 @@ def plot_one_country_data(country, year, data, graph):
         )
         return
 
+    #the graphs settings/config
     sns.set_theme(
         style="darkgrid",
         context="notebook",
@@ -205,11 +222,13 @@ def plot_one_country_data(country, year, data, graph):
         ax=ax
     )
 
+    #sets a log scale for the CO2 graph
     if graph == "CO2 emission" and (
         plot_data[value_column] > 0
     ).all():
         ax.set_yscale("log")
 
+    #sets a title
     ax.set_title(
         f"{graph} — {country}",
         fontsize=18,
@@ -226,7 +245,7 @@ def plot_one_country_data(country, year, data, graph):
     plt.close(fig)
 
 
-
+#the function assigns variables to the countries it is plotting and data to plot and plots them
 def plot_comparison(
     data, country_1, year_1, country_2, year_2, graph
 ):
@@ -335,6 +354,7 @@ def plot_comparison(
 
 
 def choice_of_comparison():
+    #asks if want to compare and stores it in a variable called choice
     choice = st.radio(
         "Would you like to compare your country with another one?",
         ["Yes", "No"],
@@ -348,8 +368,10 @@ def choice_of_comparison():
 def main():
     program_heading()
 
+    #starts by making CO2 as the default value
     CO2 = data_list["CO2 emission"]
 
+    #sets entity_1 to be CO2 which will be the default value
     entity_1 = country_input_taker(
         CO2,
         key="country_1"
@@ -360,6 +382,7 @@ def main():
 
     st.divider()
 
+    #takes input of the year of the default value which being CO2
     year_1 = year_input_taker(
         CO2,
         entity_1,
@@ -371,11 +394,13 @@ def main():
 
     st.divider()
 
+    #assigns comarison to the funciton choice_of_comparison
     comparison = choice_of_comparison()
 
     entity_2 = None
     year_2 = None
 
+    #if comparison is true it asks for the second country, the code is the same for this so no comments for this
     if comparison:
         st.divider()
 
@@ -400,11 +425,13 @@ def main():
 
     selected_graphs = what_graphs_to_graph()
 
+    #returns none if no graph is selected
     if not selected_graphs:
         return
 
     st.divider()
 
+    #loops over the graphs in the selected_graphs list and plot them if a comparison is requested
     for graph in selected_graphs:
         st.subheader(graph)
 

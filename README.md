@@ -1,6 +1,6 @@
-🌍 CO₂ Emissions Visualizer
+CO₂ Emissions Visualizer
 
-An interactive Python application for exploring and comparing CO₂ emissions and other country-level indicators over time.
+An interactive Python application for exploring and comparing CO₂ emissions and other country-level indicators across countries and over time.
 
 Launch the Application | View Source Code
 
@@ -10,26 +10,25 @@ I developed this project to explore how programming and data visualisation can m
 
 The application allows users to explore historical CO₂ emissions data for individual countries and compare two countries using interactive graphs. It also includes other indicators, such as GDP, population, land area, and CO₂ emissions per capita, to provide a broader view of differences between countries.
 
-By combining data processing with an interactive interface, I wanted to create a tool that allows users to investigate the data themselves rather than simply view predefined results.
+I wanted to create a tool that allows users to investigate data themselves, identify patterns, and explore differences between countries rather than simply view predefined results.
 
 Features
 Country-level analysis: Select a country and starting year to explore its historical data.
 Country comparisons: Plot two countries on the same graph to compare their trends over time.
 Percentage comparisons: Calculate the percentage difference between two countries using a year for which both have data.
 Multiple indicators: Explore total CO₂ emissions, CO₂ emissions per capita, GDP, land area, and population.
-Interactive visualisations: Select which indicators to display using Streamlit controls.
+Interactive visualisations: Choose which indicators to display through the Streamlit interface.
 Historical trend analysis: Examine changes in country-level indicators across available years.
 Logarithmic scaling: Display positive CO₂ emission values on a logarithmic scale where appropriate.
-Data cleaning: Handle missing values, convert data into appropriate numerical formats, and organise datasets for plotting.
+Data cleaning: Handle missing values and convert data into appropriate numerical formats.
 Caching: Use Streamlit caching to reduce repeated data loading.
 Technologies Used
-Technology	Purpose
-Python	Main programming language
-Streamlit	Interactive web application and user controls
-Pandas	Loading, cleaning, merging, and processing data
-Matplotlib	Creating and customising graphs
-Seaborn	Styling data visualisations
-NumPy	Numerical operations and validation
+Python: Main programming language.
+Streamlit: Creates the interactive web application.
+Pandas: Loads, cleans, merges, and processes datasets.
+Matplotlib: Creates and customises graphs.
+Seaborn: Styles data visualisations.
+NumPy: Supports numerical operations and data validation.
 Data Sources
 
 The datasets used in this project come from Our World in Data, which publishes research and data on global issues, including climate change, energy, population, and economic development.
@@ -43,16 +42,16 @@ GDP	gdp-worldbank-constant-usd.csv
 Land area	land-area-km.csv
 Population	population-with-un-projections.csv
 
-Original data portal: Our World in Data.
+Original data source: Our World in Data
 
 The datasets may cover different years and use different units. Comparisons should therefore be interpreted in the context of each indicator's definition and data availability.
 
-Getting Started
+Installation and Setup
 Requirements
 Python 3
 pip
 Git (optional)
-1. Clone the repository
+1. Clone the Repository
 bash
 git clone https://github.com/rapanjeetsingh/python-project.git
 cd python-project
@@ -60,14 +59,14 @@ cd python-project
 
 Alternatively, download the repository as a ZIP file from GitHub and extract it.
 
-2. Install dependencies
+2. Install Dependencies
 
 Install the required Python libraries:
 
 bash
 pip install -r requirements.txt
 
-3. Run the application
+3. Run the Application
 
 Start the Streamlit application:
 
@@ -99,7 +98,7 @@ Handling missing values and differences in data availability.
 Calculating percentage differences and interpreting numerical results.
 Improving graph readability through formatting and scale selection.
 
-The project also helped me understand the importance of data quality and context when comparing countries. A graph can make patterns easier to see, but the conclusions drawn from it depend on the quality, coverage, and meaning of the underlying data.
+The project also helped me understand the importance of data quality and context when comparing countries. A graph can make patterns easier to identify, but the conclusions drawn from it depend on the quality, coverage, and meaning of the underlying data.
 
 Future Development
 
